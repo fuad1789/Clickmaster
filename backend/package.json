@@ -4,7 +4,7 @@
   "description": "Backend for the clicker-app competition system",
   "main": "dist/server.js",
   "scripts": {
-    "start": "tsc && node dist/server.js",
+    "start": "dist/server.js",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
     "lint": "eslint . --ext .ts",
