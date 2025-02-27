@@ -100,4 +100,7 @@ UserSchema.index({ totalClicks: -1 });
 UserSchema.index({ weeklyClicks: -1 });
 UserSchema.index({ monthlyClicks: -1 });
 
-export default ("User", UserSchema);
+// Check if the model already exists to prevent model overwrite errors
+const User = mongoose.models.User || mongoose.model("User", UserSchema);
+
+export default User;

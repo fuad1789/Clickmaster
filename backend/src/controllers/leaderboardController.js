@@ -1,9 +1,14 @@
+import mongoose from "mongoose";
 import User from "../models/User.js";
 
 // Get global leaderboard
 export const getGlobalLeaderboard = async (req, res) => {
   try {
+    // Make sure User is a valid Mongoose model
+    const UserModel = mongoose.models.User || User;
+
     const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
     const period = req.query.period || "all"; // all, daily, weekly, monthly
 
@@ -25,24 +30,24 @@ export const getGlobalLeaderboard = async (req, res) => {
     }
 
     // Get top users
-    const users = await User.find({})
+    const users = await UserModel.find({})
       .select(`displayName ${sortField} streak referralCount`)
       .sort({ [sortField]: -1 })
       .skip(skip)
       .limit(limit);
 
     // Get total count
-    const total = await User.countDocuments();
+    const total = await UserModel.countDocuments();
 
     // Get user's rank if authenticated
     let userRank = null;
     if (req.user) {
       const userId = req.user._id;
-      const user = await User.findById(userId);
+      const user = await UserModel.findById(userId);
 
       if (user) {
         // Count users with more clicks than the current user
-        const betterUsers = await User.countDocuments({
+        const betterUsers = await UserModel.countDocuments({
           [sortField]: { $gt: user[sortField] },
         });
 
@@ -69,8 +74,11 @@ export const getGlobalLeaderboard = async (req, res) => {
 // Get friends leaderboard (users referred by the current user)
 export const getFriendsLeaderboard = async (req, res) => {
   try {
+    // Make sure User is a valid Mongoose model
+    const UserModel = mongoose.models.User || User;
+
     const userId = req.user._id;
-    const user = await User.findById(userId);
+    const user = await UserModel.findById(userId);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -79,7 +87,7 @@ export const getFriendsLeaderboard = async (req, res) => {
     const referralCode = user.referralCode;
 
     // Find users who were referred by the current user
-    const friends = await User.find({ referredBy: referralCode })
+    const friends = await UserModel.find({ referredBy: referralCode })
       .select("displayName totalClicks streak")
       .sort({ totalClicks: -1 });
 
@@ -96,6 +104,9 @@ export const getFriendsLeaderboard = async (req, res) => {
 // Reset daily, weekly, and monthly clicks (admin only)
 export const resetPeriodClicks = async (req, res) => {
   try {
+    // Make sure User is a valid Mongoose model
+    const UserModel = mongoose.models.User || User;
+
     const { period } = req.params;
 
     if (!["daily", "weekly", "monthly"].includes(period)) {
@@ -105,7 +116,7 @@ export const resetPeriodClicks = async (req, res) => {
     const updateField = `${period}Clicks`;
 
     // Reset the specified period clicks for all users
-    await User.updateMany({}, { $set: { [updateField]: 0 } });
+    await UserModel.updateMany({}, { $set: { [updateField]: 0 } });
 
     res.status(200).json({ message: `${period} clicks reset successfully` });
   } catch (error) {

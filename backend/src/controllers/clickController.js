@@ -1,5 +1,5 @@
 import User from "../models/User.js";
-import Click from "../models/Click.js";
+import ClickModel from "../models/ClickModel.js";
 import mongoose from "mongoose";
 
 // Record a new click
@@ -9,16 +9,20 @@ export const recordClick = async (req, res) => {
     const { coordinates } = req.body;
     const { ipAddress, userAgent } = req.body;
 
-    // Create a new click record
-    const click = new Click({
+    console.log("Click model:", ClickModel);
+    console.log("Click is constructor?", typeof ClickModel === "function");
+
+    // Create a new click document directly
+    const clickData = {
       userId,
       coordinates,
       ipAddress,
       userAgent,
       timestamp: new Date(),
-    });
+    };
 
-    await click.save();
+    // Save the click document using create method
+    const click = await ClickModel.create(clickData);
 
     // Update user's click counts
     const user = await User.findById(userId);
@@ -112,12 +116,12 @@ export const getClickHistory = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const clicks = await Click.find({ userId })
+    const clicks = await ClickModel.find({ userId })
       .sort({ timestamp: -1 })
       .skip(skip)
       .limit(limit);
 
-    const total = await Click.countDocuments({ userId });
+    const total = await ClickModel.countDocuments({ userId });
 
     res.status(200).json({
       clicks,
@@ -151,7 +155,7 @@ export const getClickStats = async (req, res) => {
     today.setHours(0, 0, 0, 0);
 
     // Get clicks per hour for today
-    const hourlyClicks = await Click.aggregate([
+    const hourlyClicks = await ClickModel.aggregate([
       {
         $match: {
           userId: new mongoose.Types.ObjectId(userId.toString()),
@@ -174,7 +178,7 @@ export const getClickStats = async (req, res) => {
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     sevenDaysAgo.setHours(0, 0, 0, 0);
 
-    const dailyClicks = await Click.aggregate([
+    const dailyClicks = await ClickModel.aggregate([
       {
         $match: {
           userId: new mongoose.Types.ObjectId(userId.toString()),
@@ -203,6 +207,7 @@ export const getClickStats = async (req, res) => {
       monthlyClicks: user.monthlyClicks,
       streak: user.streak,
       hourlyClicks,
+      dailyClicks: dailyClicks,
     });
   } catch (error) {
     console.error("Get click stats error:", error);

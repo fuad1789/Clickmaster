@@ -40,13 +40,7 @@ const ClickSchema = new mongoose.Schema(
 ClickSchema.index({ userId: 1, timestamp: -1 });
 ClickSchema.index({ timestamp: -1 });
 
-// Make sure to delete any existing model before creating a new one
-// This prevents the "Cannot overwrite model once compiled" error
-if (mongoose.models.Click) {
-  delete mongoose.models.Click;
-}
-
 // Create and export the model
-const Click = mongoose.model("Click", ClickSchema);
+const ClickModel = mongoose.model("Click", ClickSchema);
 
-export default Click;
+export default ClickModel;
