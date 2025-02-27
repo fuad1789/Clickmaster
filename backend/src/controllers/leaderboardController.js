@@ -1,13 +1,11 @@
-import { Request, Response } from "express";
-import User from "../models/User";
+import User from "../models/User.js";
 
 // Get global leaderboard
-export const getGlobalLeaderboard = async (req: Request, res: Response) => {
+export const getGlobalLeaderboard = async (req, res) => {
   try {
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
+    const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * limit;
-    const period = (req.query.period as string) || "all"; // all, daily, weekly, monthly
+    const period = req.query.period || "all"; // all, daily, weekly, monthly
 
     let sortField = "totalClicks";
 
@@ -45,7 +43,7 @@ export const getGlobalLeaderboard = async (req: Request, res: Response) => {
       if (user) {
         // Count users with more clicks than the current user
         const betterUsers = await User.countDocuments({
-          [sortField]: { $gt: user[sortField as keyof typeof user] as number },
+          [sortField]: { $gt: user[sortField] },
         });
 
         userRank = betterUsers + 1; // Add 1 because ranks start at 1, not 0
@@ -69,7 +67,7 @@ export const getGlobalLeaderboard = async (req: Request, res: Response) => {
 };
 
 // Get friends leaderboard (users referred by the current user)
-export const getFriendsLeaderboard = async (req: Request, res: Response) => {
+export const getFriendsLeaderboard = async (req, res) => {
   try {
     const userId = req.user._id;
     const user = await User.findById(userId);
@@ -96,7 +94,7 @@ export const getFriendsLeaderboard = async (req: Request, res: Response) => {
 };
 
 // Reset daily, weekly, and monthly clicks (admin only)
-export const resetPeriodClicks = async (req: Request, res: Response) => {
+export const resetPeriodClicks = async (req, res) => {
   try {
     const { period } = req.params;
 

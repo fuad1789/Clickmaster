@@ -1,17 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-export interface IClick extends Document {
-  userId: mongoose.Types.ObjectId;
-  timestamp: Date;
-  ipAddress: string;
-  userAgent: string;
-  coordinates: {
-    x: number;
-    y: number;
-  };
-}
-
-const ClickSchema: Schema = new Schema(
+const ClickSchema = new Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
@@ -50,4 +39,4 @@ const ClickSchema: Schema = new Schema(
 ClickSchema.index({ userId: 1, timestamp: -1 });
 ClickSchema.index({ timestamp: -1 });
 
-export default mongoose.model<IClick>("Click", ClickSchema);
+export default ("Click", ClickSchema);

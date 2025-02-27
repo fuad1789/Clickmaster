@@ -4,7 +4,7 @@ import crypto from "crypto";
  * Generates a unique referral code
  * @returns A 6-character alphanumeric referral code
  */
-export const generateReferralCode = (): string => {
+export const generateReferralCode = () => {
   // Generate a random buffer
   const buffer = crypto.randomBytes(3);
 
@@ -20,7 +20,7 @@ export const generateReferralCode = (): string => {
  * @param code The referral code to validate
  * @returns True if the code is valid, false otherwise
  */
-export const validateReferralCode = (code: string): boolean => {
+export const validateReferralCode = (code) => {
   // Check if the code is a 6-character alphanumeric string
   return /^[A-Z0-9]{6}$/.test(code);
 };

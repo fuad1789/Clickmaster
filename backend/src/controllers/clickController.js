@@ -1,10 +1,9 @@
-import { Request, Response } from "express";
-import User from "../models/User";
-import Click from "../models/Click";
+import User from "../models/User.js";
+import Click from "../models/Click.js";
 import mongoose from "mongoose";
 
 // Record a new click
-export const recordClick = async (req: Request, res: Response) => {
+export const recordClick = async (req, res) => {
   try {
     const userId = req.user._id;
     const { coordinates } = req.body;
@@ -106,11 +105,11 @@ export const recordClick = async (req: Request, res: Response) => {
 };
 
 // Get user's click history
-export const getClickHistory = async (req: Request, res: Response) => {
+export const getClickHistory = async (req, res) => {
   try {
     const userId = req.user._id;
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
     const clicks = await Click.find({ userId })
@@ -136,7 +135,7 @@ export const getClickHistory = async (req: Request, res: Response) => {
 };
 
 // Get click statistics
-export const getClickStats = async (req: Request, res: Response) => {
+export const getClickStats = async (req, res) => {
   try {
     const userId = req.user._id;
 

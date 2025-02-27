@@ -1,14 +1,13 @@
-import { Request, Response } from "express";
-import User from "../models/User";
-import { validateReferralCode } from "../utils/referralCode";
+import User from "../models/User.js";
+import { validateReferralCode } from "../utils/referralCode.js";
 
 // Get all users (admin only)
-export const getAllUsers = async (req: Request, res: Response) => {
+export const getAllUsers = async (req, res) => {
   try {
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
-    const search = req.query.search as string;
+    const search = req.query.search;
 
     let query = {};
 
@@ -47,7 +46,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
 };
 
 // Get user by ID (admin only)
-export const getUserById = async (req: Request, res: Response) => {
+export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -65,7 +64,7 @@ export const getUserById = async (req: Request, res: Response) => {
 };
 
 // Update user (admin only)
-export const updateUser = async (req: Request, res: Response) => {
+export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
     const { displayName, isAdmin, totalClicks } = req.body;
@@ -94,7 +93,7 @@ export const updateUser = async (req: Request, res: Response) => {
 };
 
 // Delete user (admin only)
-export const deleteUser = async (req: Request, res: Response) => {
+export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -112,7 +111,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 };
 
 // Apply referral code
-export const applyReferralCode = async (req: Request, res: Response) => {
+export const applyReferralCode = async (req, res) => {
   try {
     const userId = req.user._id;
     const { referralCode } = req.body;

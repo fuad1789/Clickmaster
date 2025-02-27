@@ -1,27 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 
-export interface IUser extends Document {
-  username: string;
-  password: string;
-  displayName: string;
-  totalClicks: number;
-  dailyClicks: number;
-  weeklyClicks: number;
-  monthlyClicks: number;
-  lastClickedAt: Date;
-  streak: number;
-  lastLoginAt: Date;
-  createdAt: Date;
-  updatedAt: Date;
-  isAdmin: boolean;
-  referralCode: string;
-  referredBy?: string;
-  referralCount: number;
-  comparePassword(candidatePassword: string): Promise<boolean>;
-}
-
-const UserSchema: Schema = new Schema(
+const UserSchema = new Schema(
   {
     username: {
       type: String,
@@ -94,7 +74,7 @@ const UserSchema: Schema = new Schema(
 // Hash password before saving
 UserSchema.pre("save", async function (next) {
   // Use a double type assertion to avoid the type error
-  const user = this as unknown as IUser;
+  const user = this;
 
   // Only hash the password if it's modified or new
   if (!user.isModified("password")) return next();
@@ -106,14 +86,12 @@ UserSchema.pre("save", async function (next) {
     user.password = await bcrypt.hash(user.password, salt);
     next();
   } catch (error) {
-    next(error as Error);
+    next(error);
   }
 });
 
 // Method to compare passwords
-UserSchema.methods.comparePassword = async function (
-  candidatePassword: string
-): Promise<boolean> {
+UserSchema.methods.comparePassword = async function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
@@ -122,4 +100,4 @@ UserSchema.index({ totalClicks: -1 });
 UserSchema.index({ weeklyClicks: -1 });
 UserSchema.index({ monthlyClicks: -1 });
 
-export default mongoose.model<IUser>("User", UserSchema);
+export default ("User", UserSchema);

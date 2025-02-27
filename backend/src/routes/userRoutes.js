@@ -5,8 +5,8 @@ import {
   updateUser,
   deleteUser,
   applyReferralCode,
-} from "../controllers/userController";
-import { auth, adminAuth } from "../middleware/auth";
+} from "../controllers/userController.js";
+import { auth, adminAuth } from "../middleware/auth.js";
 
 const router = express.Router();
 

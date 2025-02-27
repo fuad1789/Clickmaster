@@ -1,4 +1,3 @@
-import { Request, Response, NextFunction } from "express";
 import rateLimit from "express-rate-limit";
 
 // Create a rate limiter specifically for click actions
@@ -12,7 +11,7 @@ export const clickRateLimiter = rateLimit({
     status: "error",
     message: "Too many clicks, please slow down",
   },
-  keyGenerator: (req: Request) => {
+  keyGenerator: (req) => {
     // Use both IP and user ID for rate limiting
     // This prevents users from bypassing the limit by using multiple accounts
     return `${req.ip}-${req.user?._id || "anonymous"}`;
@@ -20,11 +19,7 @@ export const clickRateLimiter = rateLimit({
 });
 
 // Additional click validation middleware
-export const validateClick = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const validateClick = (req, res, next) => {
   try {
     // Check if coordinates are provided
     if (

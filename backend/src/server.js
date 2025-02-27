@@ -10,10 +10,10 @@ import cluster from "cluster";
 import os from "os";
 
 // Import routes
-import userRoutes from "./routes/userRoutes";
-import clickRoutes from "./routes/clickRoutes";
-import leaderboardRoutes from "./routes/leaderboardRoutes";
-import authRoutes from "./routes/authRoutes";
+import userRoutes from "./routes/userRoutes.js";
+import clickRoutes from "./routes/clickRoutes.js";
+import leaderboardRoutes from "./routes/leaderboardRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 
 // Load environment variables
 dotenv.config();
@@ -22,7 +22,7 @@ dotenv.config();
 const numCPUs = os.cpus().length;
 
 // Define app outside the worker scope so it can be exported
-let app: express.Application | null = null;
+let app = null;
 
 // Implement clustering for better performance
 if (cluster.isPrimary) {
@@ -87,7 +87,7 @@ if (cluster.isPrimary) {
               `Worker ${process.pid} started and listening on port ${PORT}`
             );
           })
-          .on("error", (err: NodeJS.ErrnoException) => {
+          .on("error", (err) => {
             if (err.code === "EADDRINUSE") {
               // If port is in use, try another port
               const newPort = Number(PORT) + 1;
@@ -100,7 +100,7 @@ if (cluster.isPrimary) {
                     `Worker ${process.pid} started and listening on port ${newPort}`
                   );
                 })
-                .on("error", (err: NodeJS.ErrnoException) => {
+                .on("error", (err) => {
                   console.error(
                     "Failed to start server on alternative port:",
                     err

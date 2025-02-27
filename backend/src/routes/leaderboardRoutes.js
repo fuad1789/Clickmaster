@@ -3,8 +3,8 @@ import {
   getGlobalLeaderboard,
   getFriendsLeaderboard,
   resetPeriodClicks,
-} from "../controllers/leaderboardController";
-import { auth, adminAuth } from "../middleware/auth";
+} from "../controllers/leaderboardController.js";
+import { auth, adminAuth } from "../middleware/auth.js";
 
 const router = express.Router();
 

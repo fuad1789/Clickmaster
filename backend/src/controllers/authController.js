@@ -1,10 +1,9 @@
-import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import User from "../models/User";
-import { generateReferralCode } from "../utils/referralCode";
+import User from "../models/User.js";
+import { generateReferralCode } from "../utils/referralCode.js";
 
 // Register a new user
-export const register = async (req: Request, res: Response) => {
+export const register = async (req, res) => {
   try {
     const { username, password, displayName, referredBy } = req.body;
 
@@ -70,7 +69,7 @@ export const register = async (req: Request, res: Response) => {
 };
 
 // Login user
-export const login = async (req: Request, res: Response) => {
+export const login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
@@ -121,7 +120,7 @@ export const login = async (req: Request, res: Response) => {
 };
 
 // Get current user profile
-export const getCurrentUser = async (req: Request, res: Response) => {
+export const getCurrentUser = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select("-password -__v");
 
@@ -137,7 +136,7 @@ export const getCurrentUser = async (req: Request, res: Response) => {
 };
 
 // Update user profile
-export const updateProfile = async (req: Request, res: Response) => {
+export const updateProfile = async (req, res) => {
   try {
     const { displayName } = req.body;
 

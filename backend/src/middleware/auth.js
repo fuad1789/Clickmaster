@@ -1,17 +1,7 @@
-import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import User from "../models/User";
+import User from "../models/User.js";
 
-// Extend the Express Request interface to include user
-declare global {
-  namespace Express {
-    interface Request {
-      user?: any;
-    }
-  }
-}
-
-export const auth = async (req: Request, res: Response, next: NextFunction) => {
+export const auth = async (req, res, next) => {
   try {
     // Get token from header
     const token = req.header("Authorization")?.replace("Bearer ", "");
@@ -29,7 +19,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
     );
 
     // Check if user exists
-    const user = await User.findById((decoded as any).userId);
+    const user = await User.findById(decoded.userId);
 
     if (!user) {
       return res
@@ -45,11 +35,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const adminAuth = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const adminAuth = async (req, res, next) => {
   try {
     // First run the regular auth middleware
     await auth(req, res, () => {
