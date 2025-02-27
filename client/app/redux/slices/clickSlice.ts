@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
+import { getApiUrl } from "../../utils/api";
 
 // Define types
 interface ClickCoordinates {
@@ -74,19 +75,14 @@ export const recordClick = createAsyncThunk(
         return rejectWithValue("No authentication token");
       }
 
-      const response = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001"
-        }/api/clicks`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ coordinates }),
-        }
-      );
+      const response = await fetch(getApiUrl("api/clicks"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ coordinates }),
+      });
 
       const data = await response.json();
 
@@ -113,16 +109,11 @@ export const getClickStats = createAsyncThunk(
         return rejectWithValue("No authentication token");
       }
 
-      const response = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001"
-        }/api/clicks/stats`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(getApiUrl("api/clicks/stats"), {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const data = await response.json();
 

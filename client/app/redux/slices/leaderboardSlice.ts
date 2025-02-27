@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
+import { getApiUrl } from "../../utils/api";
 
 // Define types
 interface LeaderboardUser {
@@ -66,11 +67,7 @@ export const getGlobalLeaderboard = createAsyncThunk(
       // Get token from localStorage since it's not in the auth state
       const token = localStorage.getItem("token");
 
-      const url = new URL(
-        `${
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001"
-        }/api/leaderboard/global`
-      );
+      const url = new URL(getApiUrl("api/leaderboard/global"));
       url.searchParams.append("page", page.toString());
       url.searchParams.append("limit", limit.toString());
       url.searchParams.append("period", period);
@@ -111,12 +108,11 @@ export const getFriendsLeaderboard = createAsyncThunk(
         return rejectWithValue("No authentication token");
       }
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
-      const url = `${apiUrl}/api/leaderboard/friends`;
+      const url = new URL(getApiUrl("api/leaderboard/friends"));
 
       console.log("Fetching friends leaderboard from:", url);
 
-      const response = await fetch(url, {
+      const response = await fetch(url.toString(), {
         headers: {
           Authorization: `Bearer ${token}`,
         },

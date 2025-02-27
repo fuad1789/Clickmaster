@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
+import { getApiUrl } from "../../utils/api";
 
 // Types
 interface User {
@@ -39,7 +40,7 @@ export const getCurrentUser = createAsyncThunk(
       }
 
       // Make an API call to get the current user
-      const response = await fetch("http://localhost:5001/api/auth/me", {
+      const response = await fetch(getApiUrl("api/auth/me"), {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -79,7 +80,7 @@ export const loginUser = createAsyncThunk(
   ) => {
     try {
       // Make an actual API call to the backend
-      const response = await fetch("http://localhost:5001/api/auth/login", {
+      const response = await fetch(getApiUrl("api/auth/login"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -135,7 +136,7 @@ export const registerUser = createAsyncThunk(
   ) => {
     try {
       // Make an actual API call to the backend
-      const response = await fetch("http://localhost:5001/api/auth/register", {
+      const response = await fetch(getApiUrl("api/auth/register"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -223,7 +224,7 @@ export const updateProfile = createAsyncThunk(
       }
 
       // Make an API call to update the user profile
-      const response = await fetch("http://localhost:5001/api/auth/profile", {
+      const response = await fetch(getApiUrl("api/auth/profile"), {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
